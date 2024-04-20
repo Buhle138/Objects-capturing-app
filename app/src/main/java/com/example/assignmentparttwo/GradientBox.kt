@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 
 
-val Blue = Color(0xFF0D4C92)
+val Blue = Color(0xFF3B5999)
 val Tail600 = Color(0xFF59C180)
 
 @Composable
