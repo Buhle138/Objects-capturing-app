@@ -50,7 +50,28 @@ android {
 }
 
 dependencies {
+    val nav_version = "2.7.4"
 
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    implementation("androidx.navigation:navigation-compose:2.7.4")
+    //Compose view model
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    //Network call, connecting to the internet and collecting data from the internet
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+
+    //Loading the image from the internet
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    //Json things
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
+    //Json to Kotlin Object mapping
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     //Extra icons
     implementation("androidx.compose.material:material-icons-extended-android:1.6.6")
     implementation("androidx.core:core-ktx:1.12.0")

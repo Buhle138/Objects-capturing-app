@@ -8,19 +8,24 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -43,18 +48,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import coil.compose.rememberAsyncImagePainter
+import com.example.assignmentparttwo.imageGenerator.DictionaryViewModel
+import com.example.assignmentparttwo.itemCounter.CounterViewModel
 import com.example.assignmentparttwo.location.LocationUtils
 import com.example.assignmentparttwo.location.LocationViewModel
 import java.util.Calendar
 import java.util.Date
 
 @Composable
-fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenViewModel: CategoryScreenViewModel) {
+fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenViewModel: CategoryScreenViewModel, myViewModelDictionary: DictionaryViewModel, myCounterViewModel: CounterViewModel, navigationToSecondScreen:() -> Unit) {
 
 
 
@@ -80,7 +94,7 @@ fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenVi
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.5f),
+                    .fillMaxHeight(0.45f),
                 contentAlignment = Alignment.Center
 
             ) {
@@ -98,8 +112,11 @@ fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenVi
                         .width(10.dp)
                         .padding(horizontal = 20.dp)
                         .clip(RoundedCornerShape(15.dp))
-                        .background(Color(0xFFEFEEEE)), value = "", onValueChange = {}, placeholder = { Text(text = "Category Name")},
-                        leadingIcon = { IconButton(onClick = {Log.i("Icon clicked", "you clicked it ")}){
+                        .background(Color(0xFFEFEEEE)), value = myViewModelDictionary.state.value.textState, onValueChange = {myViewModelDictionary.updateText(it)}, placeholder = { Text(text = "Category Name")},
+                        leadingIcon = { IconButton(onClick = {
+                            myViewModelDictionary.fetchDefinitions(myViewModelDictionary.state.value.textState)
+                            myViewModelDictionary.fetchImage()
+                        }){
                             Icon(imageVector = Icons.Default.Edit, contentDescription = null)
                         }
                         }
@@ -113,42 +130,36 @@ fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenVi
                         .padding(horizontal = 20.dp)
                         .clip(RoundedCornerShape(15.dp))
                         .background(Color(0xFFEFEEEE)), value = categoryScreenViewModel.state.value.date, onValueChange = {categoryScreenViewModel.updateDate(it)}, placeholder = { Text(text = "Date")},
-                        leadingIcon = { IconButton(onClick = {
-                            val year: Int
-                            val month: Int
-                            val day: Int
-
-                            val calendar = Calendar.getInstance()
-                            year = calendar.get(Calendar.YEAR)
-                            month = calendar.get(Calendar.MONTH)
-                            day = calendar.get(Calendar.DAY_OF_MONTH)
-                            calendar.time = Date()
-
-
-                            val datePickerDialog = DatePickerDialog(
-                                context,
-                                { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                                    categoryScreenViewModel.updateDate("$dayOfMonth/${month + 1}/$year")
-                                }, year, month, day
-                            )
-
-                            datePickerDialog.show()
-                        }) {
+                        leadingIcon = { IconButton(onClick = { displayDate(context, categoryScreenViewModel)}) {
                             Icon(imageVector = Icons.Default.DateRange, contentDescription = null)
                         }}
                         )
+                    var isTextFieldFocused by remember { mutableStateOf(false) }
 
                     //NUMBER OF ITEMS
                     Spacer(modifier = Modifier.height(20.dp))
                     OutlinedTextField( modifier = Modifier
+                        .onFocusChanged { isTextFieldFocused = it.isFocused }
                         .fillMaxWidth()
                         .width(10.dp)
                         .padding(horizontal = 20.dp)
                         .clip(RoundedCornerShape(15.dp))
-                        .background(Color(0xFFEFEEEE)), value = "", onValueChange = {}, placeholder = { Text(text = "Number Of Items")},
-                        leadingIcon = {IconButton(onClick = {Log.i("Icon clicked", "you clicked it ")}){
+                        .background(Color(0xFFEFEEEE)),
+                        value = if (isTextFieldFocused) "${myCounterViewModel.state.value.count}" else "",
+                        onValueChange = {
+                            if(!isTextFieldFocused){
+                                myCounterViewModel.updateCounter(myCounterViewModel.state.value.count)
+                            }
+                                        },
+                        placeholder = { Text(text = "Number Of Items") },
+                        leadingIcon = {IconButton(onClick = {myCounterViewModel.increase()}
+
+                        ){
                             Icon(imageVector = Icons.Default.Add, contentDescription = null);
                         }})
+
+
+
 
                     //LOCATION
                     Spacer(modifier = Modifier.height(20.dp))
@@ -179,28 +190,78 @@ fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenVi
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if(isSmallScreenHeight()){
-                    Spacer(modifier = Modifier.fillMaxSize(0.05f))
-                }else{
-                    Spacer(modifier = Modifier.fillMaxSize(0.1f))
-                }
-                Text(text = "Create Category", style = MaterialTheme.typography.headlineMedium,
-                    color = Color.Black
-                )
-                if(isSmallScreenHeight()){
-                    Spacer(modifier = Modifier.fillMaxSize(0.05f))
-                }else{
-                    Spacer(modifier = Modifier.fillMaxSize(0.1f))
-                }
 
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Create")
+
+
+
+                Text(myViewModelDictionary.state.value.imageError)
+
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth() // Adjust the size of the image as needed
+                        .height(170.dp)
+                        .width(20.dp)
+                        .padding(start = 20.dp, end = 20.dp) // Add padding around the image
+                        .clip(RoundedCornerShape(40.dp)) // Apply rounded corners to the image
+                        .background(Color.DarkGray)
+
+                    ,
+                    painter = rememberAsyncImagePainter(myViewModelDictionary.state.value.imageProfile),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
+
+                )
+                Text(text = "Category Description", modifier = Modifier.padding(end = 10.dp),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+
+                Text(myViewModelDictionary.state.value.definition,  modifier = Modifier.padding(horizontal = 20.dp))
+
+                Row {
+                        Text(text = "Back", modifier = Modifier.padding(top = 10.dp,end = 80.dp),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+                    Button(
+                        onClick = {
+                            categoryScreenViewModel.updateList(myViewModelDictionary.state.value)
+                            Log.i("name of current state variable", myViewModelDictionary.state.value.textState)
+                            Log.i("List of objects", categoryScreenViewModel.listOfObjectsState.value.toString())
+                            navigationToSecondScreen()
+                        }) {
+                        Text(text = "Create")
+                    }
+                    ClickableText(text = AnnotatedString("Next"), modifier = Modifier.padding(top = 10.dp,start = 80.dp),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold) ,onClick = {navigationToSecondScreen()})
                 }
 
             }
+
+
         }
 
     }
+}
+
+fun displayDate(context: Context, categoryScreenViewModel: CategoryScreenViewModel){
+
+    val year: Int
+    val month: Int
+    val day: Int
+
+    val calendar = Calendar.getInstance()
+    year = calendar.get(Calendar.YEAR)
+    month = calendar.get(Calendar.MONTH)
+    day = calendar.get(Calendar.DAY_OF_MONTH)
+    calendar.time = Date()
+
+
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            categoryScreenViewModel.updateDate("$dayOfMonth/${month + 1}/$year")
+        }, year, month, day
+    )
+
+    datePickerDialog.show()
+
 }
 
 @Composable
@@ -256,39 +317,28 @@ fun locationDisplay(
                     Toast.makeText(context, "Please enable it in the android settings", Toast.LENGTH_LONG).show()
 
                 }
-
             }
         })
 
 
-    Column (modifier = Modifier.fillMaxSize().background(Color.Black),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ){
         if(location != null){
             categoryScreenViewModel.updateCurrentLocation("$address")
         }else{
-            Toast.makeText(context, "Location is not available", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Current location loading...", Toast.LENGTH_LONG).show()
         }
 
+    if(locationUtils.hasLocationPermission(context)){
+        //Permission already granted update the location
+        locationUtils.requestLocationUpdates(viewModel)
 
-        Button(onClick = {
-            if(locationUtils.hasLocationPermission(context)){
-                //Permission already granted update the location
-                locationUtils.requestLocationUpdates(viewModel)
-
-            }else{
-                //Request location permission by launching the rational
-                requestPermissionLauncher.launch(
-                    arrayOf(//Since we are requesting multiple permissions they will be in the form of an array.
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-                )
-            }
-        }) {
-            Text(text = "Get location")
-        }
+    }else{
+        //Request location permission by launching the rational
+        requestPermissionLauncher.launch(
+            arrayOf(//Since we are requesting multiple permissions they will be in the form of an array.
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        )
     }
 
 }
