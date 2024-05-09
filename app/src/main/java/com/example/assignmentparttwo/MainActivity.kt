@@ -5,12 +5,9 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -20,7 +17,6 @@ import com.example.assignmentparttwo.categoryScreen.CategoryPage
 import com.example.assignmentparttwo.imageGenerator.DictionaryViewModel
 import com.example.assignmentparttwo.itemCounter.CounterViewModel
 import com.example.assignmentparttwo.itemsScreen.ItemScreen
-import com.example.assignmentparttwo.location.LocationUtils
 import com.example.assignmentparttwo.location.LocationViewModel
 import com.example.assignmentparttwo.ui.theme.AssignmentPartTwoTheme
 
@@ -77,7 +73,7 @@ fun MyNavigation(context: Context, viewModel: LocationViewModel, categoryScreenV
             }
         }
         composable("itemsscreen"){
-            ItemScreen( myViewModelDictionary = myViewModelDictionary){
+            ItemScreen( myViewModelDictionary = myViewModelDictionary, navController){
                 navController.navigate("categorypage")
             }
         }
