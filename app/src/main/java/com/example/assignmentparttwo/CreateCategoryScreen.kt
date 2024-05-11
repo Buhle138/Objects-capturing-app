@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -220,10 +221,10 @@ fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenVi
                         Text(text = "Back", modifier = Modifier.padding(top = 10.dp,end = 80.dp),
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
                     Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF18C0C1)),
                         onClick = {
                             categoryScreenViewModel.updateList(myViewModelDictionary.state.value)
-                            Log.i("name of current state variable", myViewModelDictionary.state.value.textState)
-                            Log.i("List of objects", categoryScreenViewModel.listOfObjectsState.value.toString())
                             navigationToSecondScreen()
                         }) {
                         Text(text = "Create")

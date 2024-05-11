@@ -30,6 +30,7 @@ class CategoryScreenViewModel : ViewModel(){
         listOfObjectsState.value = listOfObjectsState.value.copy(namesList = currentList)
     }
 
+    //MyScreenState is found in the DictionaryViewModel.
  data class  ListOfObjectsCategories(
      var  namesList: List<MyScreenState> = mutableListOf()
  )

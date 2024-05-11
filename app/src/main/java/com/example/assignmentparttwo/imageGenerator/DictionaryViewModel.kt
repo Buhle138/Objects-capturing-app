@@ -1,6 +1,6 @@
 package com.example.assignmentparttwo.imageGenerator
 
-import android.util.Log
+import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -75,9 +75,14 @@ data class MyScreenState(
     var secondImage: String = "",
     var thirdImage: String = "",
     var namesList: List<String> = mutableListOf(),
+    var items: List<SingleItem> = mutableListOf(),
     var imageError: String = "",
     var alternativeImage: String = "",
     val error: String? = null
+)
+data class SingleItem(
+    var nameOfItem: String = "",
+    var picturesOfItems: Bitmap? = null
 )
 
 data class CategoryObject(

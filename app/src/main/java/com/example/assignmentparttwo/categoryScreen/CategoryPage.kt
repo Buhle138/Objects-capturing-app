@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -209,6 +210,8 @@ fun CategoryPage(myViewModelDictionary: DictionaryViewModel,categoryScreenViewMo
                     Button(
                         modifier = Modifier
                             .padding(start = 130.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF18C0C1)),
                         onClick = {  navController.navigate("itemsscreen") }) {
                         Text(text = "Continue")
                         Icon(
