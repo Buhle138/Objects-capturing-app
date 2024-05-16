@@ -72,7 +72,6 @@ import java.util.Date
 fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenViewModel: CategoryScreenViewModel, myViewModelDictionary: DictionaryViewModel, myCounterViewModel: CounterViewModel, navigationToSecondScreen:() -> Unit) {
 
 
-
     GradientBox(modifier = Modifier.fillMaxSize()) {
 
 
@@ -218,8 +217,8 @@ fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenVi
                 Text(myViewModelDictionary.state.value.definition,  modifier = Modifier.padding(horizontal = 20.dp))
 
                 Row {
-                        Text(text = "Back", modifier = Modifier.padding(top = 10.dp,end = 80.dp),
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+                    ClickableText(text = AnnotatedString("Back"), modifier = Modifier.padding(top = 10.dp, end = 80.dp),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold) ,onClick = {})
                     Button(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF18C0C1)),

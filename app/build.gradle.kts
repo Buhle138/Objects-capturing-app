@@ -58,6 +58,8 @@ dependencies {
     //Compose view model
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+
     //Network call, connecting to the internet and collecting data from the internet
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
@@ -92,4 +94,18 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    val cameraxVersion = "1.3.0-rc01"
+    //noinspection GradleDependency
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    //noinspection GradleDependency
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    //noinspection GradleDependency
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    //noinspection GradleDependency
+    implementation("androidx.camera:camera-video:$cameraxVersion")
+
+    //noinspection GradleDependency
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+    //noinspection GradleDependency
+    implementation("androidx.camera:camera-extensions:$cameraxVersion")
 }

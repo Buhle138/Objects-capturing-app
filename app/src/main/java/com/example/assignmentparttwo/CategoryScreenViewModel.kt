@@ -1,5 +1,6 @@
 package com.example.assignmentparttwo
 
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.assignmentparttwo.imageGenerator.MyScreenState
@@ -28,6 +29,19 @@ class CategoryScreenViewModel : ViewModel(){
         val currentList = listOfObjectsState.value.namesList.toMutableList()
         currentList.add(newObject)
         listOfObjectsState.value = listOfObjectsState.value.copy(namesList = currentList)
+    }
+
+    public fun updateUriList(nameOfCurrentState: MyScreenState, uri: Uri){
+
+        for (item in listOfObjectsState.value.namesList){
+            if (item.textState == nameOfCurrentState.textState){
+                val currentList = mutableStateOf<List<Uri>>(emptyList())
+                currentList.value += listOf(uri)
+                item.capturedImageUris = currentList
+
+            }
+        }
+
     }
 
     //MyScreenState is found in the DictionaryViewModel.

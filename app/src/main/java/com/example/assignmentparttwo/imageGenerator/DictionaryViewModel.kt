@@ -1,6 +1,9 @@
 package com.example.assignmentparttwo.imageGenerator
 
 import android.graphics.Bitmap
+import android.net.Uri
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,21 +18,14 @@ class DictionaryViewModel : ViewModel(){
         state.value = state.value.copy(textState = newText)
     }
 
-
-    fun  updateFirstImage(firstImage: String){
-        state.value = state.value.copy(imageProfile = firstImage)
+    fun updateItemName(newText: String){
+        state.value = state.value.copy(textState = newText)
     }
 
-    fun  updateSecondImage(secondImage: String){
-        state.value = state.value.copy(imageProfile = secondImage)
-    }
-
-    fun  updateThirdImage(thirdImage: String){
-        state.value = state.value.copy(imageProfile = thirdImage)
-    }
-
-    fun  updateDefinition(definition: String){
-        state.value = state.value.copy(imageProfile = definition)
+    fun updateNamesList(newName: String){
+        val currentList = state.value.namesList.toMutableList()
+        currentList.add(newName)
+        state.value = state.value.copy(namesList = currentList)
     }
 
     public  fun fetchDefinitions(wordSearch: String){
@@ -66,7 +62,17 @@ class DictionaryViewModel : ViewModel(){
         }
     }
 
+    private val _capturedImageUris = mutableStateOf<List<Uri>>(emptyList())
+    val capturedImageUris: State<List<Uri>> = _capturedImageUris
+
+    fun addCapturedImage(uri: Uri) {
+        _capturedImageUris.value += listOf(uri)
+        state.value = state.value.copy(capturedImageUris = _capturedImageUris)
+    }
+
 }
+
+
 
 data class MyScreenState(
     var textState: String = "",
@@ -74,15 +80,15 @@ data class MyScreenState(
     var imageProfile: String = "",
     var secondImage: String = "",
     var thirdImage: String = "",
+    var nameOfItem: String = "",
     var namesList: List<String> = mutableListOf(),
-    var items: List<SingleItem> = mutableListOf(),
+    var capturedImageUris: MutableState<List<Uri>> = mutableStateOf<List<Uri>>(emptyList()),
     var imageError: String = "",
     var alternativeImage: String = "",
     val error: String? = null
 )
-data class SingleItem(
-    var nameOfItem: String = "",
-    var picturesOfItems: Bitmap? = null
+data class ItemName(
+    var nameOfItem: String = ""
 )
 
 data class CategoryObject(
