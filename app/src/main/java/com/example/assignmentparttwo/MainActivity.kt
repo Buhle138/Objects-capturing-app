@@ -18,6 +18,8 @@ import com.example.assignmentparttwo.categoryScreen.CategoryPage
 import com.example.assignmentparttwo.imageGenerator.DictionaryViewModel
 import com.example.assignmentparttwo.itemCounter.CounterViewModel
 import com.example.assignmentparttwo.itemsScreen.ItemScreen
+import com.example.assignmentparttwo.itemsScreen.mapfeature.LocationUtils
+import com.example.assignmentparttwo.itemsScreen.mapfeature.NewLocationViewModel
 import com.example.assignmentparttwo.location.LocationViewModel
 import com.example.assignmentparttwo.loginPage.AuthenticationViewModel
 import com.example.assignmentparttwo.loginPage.Login
@@ -54,6 +56,10 @@ class MainActivity : ComponentActivity() {
                 ViewModelProvider(this).get(AuthenticationViewModel::class.java)
             }
 
+            val myViewModelLocation by lazy {
+                ViewModelProvider(this).get(NewLocationViewModel::class.java)
+            }
+
 
             AssignmentPartTwoTheme {
                 // A surface container using the 'background' color from the theme
@@ -68,7 +74,8 @@ class MainActivity : ComponentActivity() {
                         myViewModelDictionary,
                         myViewModelCounter,
                         myViewModelCamera,
-                        myViewModelAuthentication
+                        myViewModelAuthentication,
+                        myViewModelLocation
                     )
 
                 }
@@ -80,7 +87,17 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MyNavigation(context: Context, viewModel: LocationViewModel, categoryScreenViewModel: CategoryScreenViewModel, myViewModelDictionary: DictionaryViewModel, myCounterViewModel: CounterViewModel, myViewModelCamera: CameraViewModel, myViewModelAuthenticate: AuthenticationViewModel) {
+fun MyNavigation(
+    context: Context,
+    viewModel: LocationViewModel,
+    categoryScreenViewModel: CategoryScreenViewModel,
+    myViewModelDictionary: DictionaryViewModel,
+    myCounterViewModel: CounterViewModel,
+    myViewModelCamera: CameraViewModel,
+    myViewModelAuthenticate: AuthenticationViewModel,
+    myViewModelLocation: NewLocationViewModel
+) {
+    val localUtils = LocationUtils(context)
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "loginscreen") {
         composable("loginscreen") {
@@ -95,19 +112,19 @@ fun MyNavigation(context: Context, viewModel: LocationViewModel, categoryScreenV
             }
         }
         composable("categorypage") {
-            CategoryPage(myViewModelDictionary, categoryScreenViewModel, navController) {
+            CategoryPage(context,myViewModelDictionary, categoryScreenViewModel, navController) {
                 navController.navigate("loginscreen")
             }
         }
         composable("itemsscreen"){
-            ItemScreen(context, myViewModelDictionary = myViewModelDictionary, myViewModelCamera, categoryScreenViewModel ,navController){
+            ItemScreen(context, myViewModelDictionary = myViewModelDictionary, myViewModelCamera, categoryScreenViewModel ,navController,localUtils, myViewModelLocation){
                 navController.navigate("categorypage")
             }
         }
         composable("login"){
-         Login(navController, myViewModelAuthenticate){
-             navController.navigate("loginscreen")
-         }
+            Login(navController, myViewModelAuthenticate){
+                navController.navigate("loginscreen")
+            }
         }
 
         composable("registration"){

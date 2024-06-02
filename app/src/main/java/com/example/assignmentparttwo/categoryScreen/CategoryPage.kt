@@ -1,5 +1,6 @@
 package com.example.assignmentparttwo.categoryScreen
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -53,7 +54,7 @@ import com.example.assignmentparttwo.displayDate
 import com.example.assignmentparttwo.imageGenerator.DictionaryViewModel
 
 @Composable
-fun CategoryPage(myViewModelDictionary: DictionaryViewModel,categoryScreenViewModel: CategoryScreenViewModel, navController: NavHostController, navigateToFirstScreen:() -> Unit){
+fun CategoryPage(context: Context,myViewModelDictionary: DictionaryViewModel,categoryScreenViewModel: CategoryScreenViewModel, navController: NavHostController, navigateToFirstScreen:() -> Unit){
 
     GradientBox(modifier = Modifier.fillMaxSize()) {
 
@@ -127,7 +128,7 @@ fun CategoryPage(myViewModelDictionary: DictionaryViewModel,categoryScreenViewMo
                             onClick = {
                                 myViewModelDictionary.fetchDefinitions(item.textState)
                                 myViewModelDictionary.updateText(item.textState)
-                                myViewModelDictionary.fetchImage()
+                                myViewModelDictionary.fetchImage(context)
                             }) {
                             Text(item.textState)
                         }

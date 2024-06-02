@@ -1,8 +1,11 @@
 package com.example.assignmentparttwo
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.assignmentparttwo.cameraFeature.CapturedImages
+import com.example.assignmentparttwo.imageGenerator.DictionaryViewModel
 import com.example.assignmentparttwo.imageGenerator.MyScreenState
 
 class CategoryScreenViewModel : ViewModel(){
@@ -12,6 +15,8 @@ class CategoryScreenViewModel : ViewModel(){
     val locationState = mutableStateOf(CurrentLocation())
 
     val listOfObjectsState = mutableStateOf(ListOfObjectsCategories())
+
+    val listOfCaputuredImagesState = mutableStateOf(ListOfCapturedImages())
 
 
     public fun updateCurrentLocation(newLocation: String){
@@ -23,7 +28,11 @@ class CategoryScreenViewModel : ViewModel(){
         state.value = state.value.copy(date = newDate)
     }
 
+    public fun updateNamesItemOfObject(){
 
+
+
+    }
 
     public fun updateList(newObject: MyScreenState){
         val currentList = listOfObjectsState.value.namesList.toMutableList()
@@ -31,18 +40,17 @@ class CategoryScreenViewModel : ViewModel(){
         listOfObjectsState.value = listOfObjectsState.value.copy(namesList = currentList)
     }
 
-    public fun updateUriList(nameOfCurrentState: MyScreenState, uri: Uri){
-
-        for (item in listOfObjectsState.value.namesList){
-            if (item.textState == nameOfCurrentState.textState){
-                val currentList = mutableStateOf<List<Uri>>(emptyList())
-                currentList.value += listOf(uri)
-                item.capturedImageUris = currentList
-
-            }
-        }
+    public  fun updateListOfImages(newUriObject: CapturedImages){
+        val  currentList = listOfCaputuredImagesState.value.listOfUris.toMutableList()
+        currentList.add(newUriObject)
+        listOfCaputuredImagesState.value = listOfCaputuredImagesState.value.copy(listOfUris = currentList)
 
     }
+
+    //Having a list of captured images Uri
+    data class  ListOfCapturedImages(
+        var  listOfUris: List<CapturedImages> = mutableListOf()
+    )
 
     //MyScreenState is found in the DictionaryViewModel.
  data class  ListOfObjectsCategories(

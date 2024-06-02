@@ -115,7 +115,7 @@ fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenVi
                         .background(Color(0xFFEFEEEE)), value = myViewModelDictionary.state.value.textState, onValueChange = {myViewModelDictionary.updateText(it)}, placeholder = { Text(text = "Category Name")},
                         leadingIcon = { IconButton(onClick = {
                             myViewModelDictionary.fetchDefinitions(myViewModelDictionary.state.value.textState)
-                            myViewModelDictionary.fetchImage()
+                            myViewModelDictionary.fetchImage(context)
                         }){
                             Icon(imageVector = Icons.Default.Edit, contentDescription = null)
                         }
@@ -224,6 +224,7 @@ fun LoginScreen(context: Context, viewModel: LocationViewModel, categoryScreenVi
                             containerColor = Color(0xFF18C0C1)),
                         onClick = {
                             categoryScreenViewModel.updateList(myViewModelDictionary.state.value)
+                            Log.i("ObjectCreated", categoryScreenViewModel.listOfObjectsState.value.namesList.toString())
                             navigationToSecondScreen()
                         }) {
                         Text(text = "Create")
