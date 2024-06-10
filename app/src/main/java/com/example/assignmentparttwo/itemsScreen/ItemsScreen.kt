@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddLocation
+import androidx.compose.material.icons.filled.AlignVerticalBottom
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.CameraAlt
@@ -169,6 +170,11 @@ fun ItemScreen(
             selectedIcon = Icons.Filled.Add,
             unselectedIcon = Icons.Outlined.Add,
         ),
+        NavigationItem(
+            title = "Progress Page",
+            selectedIcon = Icons.Filled.AlignVerticalBottom,
+            unselectedIcon = Icons.Filled.AlignVerticalBottom,
+        ),
     )
 
     var showDialog by remember { mutableStateOf(false)}
@@ -218,6 +224,8 @@ fun ItemScreen(
                             navController.navigate("loginscreen")
                         }else if (title == "Add New Item"){
                             showDialog = true
+                        }else if (title == "Progress Page"){
+                            navController.navigate("progressbarwithstates")
                         }
 
                         selectedItemIndex = index
@@ -367,6 +375,7 @@ fun ItemScreen(
 
                             Button(onClick ={
 
+                                myViewModelDictionary.incrementCountItems()
 
                                 myViewModelDictionary.addItem(myViewModelDictionary.listOfItems.value.nameOfItem)
 
@@ -430,13 +439,10 @@ fun ItemScreen(
 
                         IconButton(
                             onClick = {
-                                Log.i("PageState", myViewModelDictionary.listOfItems.value.pageState.toString())
-
                                 scope.launch {
                                     pagerState.animateScrollToPage(
                                       pagerState.currentPage - 1
                                     )
-                                    myViewModelDictionary.decreasePageState(pagerState.currentPage - 1)
                                 }
 
 
@@ -449,13 +455,11 @@ fun ItemScreen(
                         }
                         IconButton(
                             onClick = {
-                                Log.i("PageState", myViewModelDictionary.listOfItems.value.pageState.toString())
 
                                 scope.launch {
                                     pagerState.animateScrollToPage(
                                         pagerState.currentPage + 1
                                     )
-                                    myViewModelDictionary.increasePageState(pagerState.currentPage + 1)
                                 }
 
                             },
@@ -499,13 +503,13 @@ fun ItemScreen(
                     myViewModelDictionary.stateOfItems.forEach { itemObject ->
                         val index = myViewModelDictionary.stateOfItems.indexOfFirst { it.categoryItBelongs == myViewModelDictionary.state.value.textState }
                         if (index != -1) {
-                            Text(modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp),text = itemObject.listOfItems[myViewModelDictionary.listOfItems.value.pageState], fontSize = 20.sp)
+                            Text(modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp),text =  itemObject.listOfItems[pagerState.currentPage], fontSize = 20.sp)
                         }
 
                     }
 
 
-
+                    Spacer(modifier = Modifier.size(16.dp))
 
                     val context = LocalContext.current
                     val file = context.createImageFile()
@@ -564,7 +568,7 @@ fun ItemScreen(
                 if(locationUtils.hasLocationPermission(context)){
                     locationUtils.requestLocationUpdates(myViewModelLocation)
                     myViewModelLocation.location.value?.let { it1->
-                        LocationSelectionScreen(myViewModelDictionary,location = it1,myViewModelCamera, myViewModelLocation ,onLocationSelected = {
+                        LocationSelectionScreen(myViewModelCategory,myViewModelDictionary,location = it1,myViewModelCamera, myViewModelLocation ,onLocationSelected = {
                             myViewModelLocation.fetchAddress("${it.latitude}, ${it.longitude}")
                             navController.popBackStack()
                         })

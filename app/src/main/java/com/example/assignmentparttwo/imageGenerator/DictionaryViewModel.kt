@@ -25,6 +25,11 @@ class DictionaryViewModel : ViewModel(){
 
     var stateOfItems = mutableStateListOf<Items>()
 
+    var countItems = mutableStateOf(0)
+
+    fun incrementCountItems() {
+        countItems.value += 1
+    }
 
     // List holding current items to be added to an object
     private val _items = mutableStateListOf<String>()

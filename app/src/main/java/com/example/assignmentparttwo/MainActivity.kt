@@ -21,16 +21,18 @@ import com.example.assignmentparttwo.itemsScreen.ItemScreen
 import com.example.assignmentparttwo.itemsScreen.mapfeature.LocationUtils
 import com.example.assignmentparttwo.itemsScreen.mapfeature.NewLocationViewModel
 import com.example.assignmentparttwo.location.LocationViewModel
-import com.example.assignmentparttwo.loginPage.AuthenticationViewModel
-import com.example.assignmentparttwo.loginPage.Login
-import com.example.assignmentparttwo.loginPage.Registration
+import com.example.assignmentparttwo.progressPage.MainScreen
 import com.example.assignmentparttwo.ui.theme.AssignmentPartTwoTheme
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 
 
 class MainActivity : ComponentActivity() {
+    private val auth: FirebaseAuth by lazy { Firebase.auth }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val context: Context = this
@@ -52,9 +54,7 @@ class MainActivity : ComponentActivity() {
                 ViewModelProvider(this).get(CameraViewModel::class.java)
             }
 
-            val myViewModelAuthentication by lazy{
-                ViewModelProvider(this).get(AuthenticationViewModel::class.java)
-            }
+
 
             val myViewModelLocation by lazy {
                 ViewModelProvider(this).get(NewLocationViewModel::class.java)
@@ -74,7 +74,6 @@ class MainActivity : ComponentActivity() {
                         myViewModelDictionary,
                         myViewModelCounter,
                         myViewModelCamera,
-                        myViewModelAuthentication,
                         myViewModelLocation
                     )
 
@@ -94,7 +93,6 @@ fun MyNavigation(
     myViewModelDictionary: DictionaryViewModel,
     myCounterViewModel: CounterViewModel,
     myViewModelCamera: CameraViewModel,
-    myViewModelAuthenticate: AuthenticationViewModel,
     myViewModelLocation: NewLocationViewModel
 ) {
     val localUtils = LocationUtils(context)
@@ -121,21 +119,21 @@ fun MyNavigation(
                 navController.navigate("categorypage")
             }
         }
-        composable("login"){
-            Login(navController, myViewModelAuthenticate){
-                navController.navigate("loginscreen")
-            }
+        composable("progressbarwithstates"){
+            MainScreen(navController, myViewModelDictionary)
         }
+//        composable("login"){
+//            Login(navController, myViewModelAuthenticate){
+//                navController.navigate("loginscreen")
+//            }
+//        }
 
-        composable("registration"){
-            Registration(navController, myViewModelAuthenticate){
-                navController.navigate("login")
-            }
-        }
+
 
 
     }
 }
+
 
 fun Context.createImageFile(): File {
 

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.example.assignmentparttwo.CategoryScreenViewModel
 import com.example.assignmentparttwo.cameraFeature.CameraViewModel
 import com.example.assignmentparttwo.imageGenerator.DictionaryViewModel
 import com.example.assignmentparttwo.itemsScreen.createImageFile
@@ -51,6 +52,7 @@ import java.util.Objects
 //So we add the lat and log to the parameter of this function.
 fun LocationSelectionScreen(
 
+    myViewModelCategory: CategoryScreenViewModel,
     myViewModelDictionary: DictionaryViewModel,
     location: LocationData, //getting the location
     myViewModelCamera: CameraViewModel,
@@ -86,7 +88,7 @@ fun LocationSelectionScreen(
                 )
             }
 
-            Text(modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp),text = "Address", fontSize = 20.sp)
+            Text(modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp),text = if(myViewModelCategory.locationState.value.location.isEmpty()) "No Address" else myViewModelCategory.locationState.value.location, fontSize = 20.sp)
 
 
         }
